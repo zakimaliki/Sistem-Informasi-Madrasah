@@ -37,7 +37,6 @@ export function Navbar() {
     { label: 'Keuangan', href: '/keuangan' },
     { label: 'Galeri', href: '/galeri' },
     { label: 'Berita', href: '/berita' },
-    { label: 'PPDB', href: '/ppdb' },
     { label: 'Kontak', href: '/kontak' },
   ]
 
@@ -57,13 +56,21 @@ export function Navbar() {
           <div className="hidden lg:flex items-center gap-1">
             {menuItems.map((item) => (
               <div key={item.label} className="relative group">
-                <button
-                  className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors flex items-center gap-1"
-                  onClick={() => item.submenu && setActiveDropdown(activeDropdown === item.label ? null : item.label)}
-                >
-                  {item.label}
-                  {item.submenu && <ChevronDown className="w-4 h-4" />}
-                </button>
+                {item.submenu ? (
+                  <button
+                    className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors flex items-center gap-1"
+                  >
+                    {item.label}
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors flex items-center gap-1"
+                  >
+                    {item.label}
+                  </Link>
+                )}
                 
                 {item.submenu && (
                   <div className="absolute left-0 mt-0 w-48 bg-white border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2">
@@ -112,13 +119,23 @@ export function Navbar() {
           <div className="lg:hidden pb-4 space-y-2">
             {menuItems.map((item) => (
               <div key={item.label}>
-                <button
-                  className="w-full text-left px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary rounded-lg transition-colors flex items-center justify-between"
-                  onClick={() => item.submenu && setActiveDropdown(activeDropdown === item.label ? null : item.label)}
-                >
-                  {item.label}
-                  {item.submenu && <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === item.label ? 'rotate-180' : ''}`} />}
-                </button>
+                {item.submenu ? (
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary rounded-lg transition-colors flex items-center justify-between"
+                    onClick={() => setActiveDropdown(activeDropdown === item.label ? null : item.label)}
+                  >
+                    {item.label}
+                    <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === item.label ? 'rotate-180' : ''}`} />
+                  </button>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className="w-full text-left block px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary rounded-lg transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                )}
                 
                 {item.submenu && activeDropdown === item.label && (
                   <div className="bg-secondary rounded-lg ml-4 mt-1 space-y-1">
@@ -127,6 +144,10 @@ export function Navbar() {
                         key={sub.label}
                         href={sub.href}
                         className="block px-4 py-2 text-sm text-foreground hover:text-primary transition-colors"
+                        onClick={() => {
+                          setActiveDropdown(null)
+                          setIsOpen(false)
+                        }}
                       >
                         {sub.label}
                       </Link>
